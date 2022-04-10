@@ -96,7 +96,7 @@ fdescribe("ListPage", () => {
     //
     //
     //
-    // Jasmine - not recommended
+    // Jasmine - not recommended, use Cypress
     it("should load async todos", (done) => {
         const arr = [1, 2, 3, 4, 5];
         const spy = spyOn(service, "getStoredTodos").and.returnValue(
