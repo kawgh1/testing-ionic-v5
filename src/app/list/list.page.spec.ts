@@ -14,7 +14,7 @@ import { RouterTestingModule } from "@angular/router/testing";
 
 import { ListPage } from "./list.page";
 
-fdescribe("ListPage", () => {
+describe("ListPage", () => {
     let component: ListPage;
     let fixture: ComponentFixture<ListPage>;
     //
