@@ -134,4 +134,50 @@ fdescribe("ListPage", () => {
         tick();
         expect(component.todos).toBe(arr);
     }));
+
+    //
+    //
+    // REACTIVE FORM TESTING
+    //
+    //
+    // since a blank field is invalid on submission
+    // a tested blank field should be invalid, or false
+    it("The Reactive Form should have an initially invalid form", () => {
+        expect(component.dataForm.valid).toBeFalse();
+    });
+    //
+    // check required for name field
+    it("The Reactive Form Name Field should be required", () => {
+        let name = component.dataForm.controls["name"];
+        let errors = name.errors || {};
+        expect(errors.required).toBeTruthy();
+    });
+
+    //
+    // check min length for name field
+    it("The Reactive Form Name Field should have a minlength error", () => {
+        let name = component.dataForm.controls["name"];
+        name.setValue("long");
+        let errors = name.errors || {};
+        expect(errors["minlength"]).toBeTruthy();
+    });
+
+    //
+    // accept 5+ character in name
+    it("The Reactive Form Name Field should accept 5+ characters", () => {
+        let name = component.dataForm.controls["name"];
+        name.setValue("longr");
+        let errors = name.errors || {};
+        expect(errors["minlength"]).toBeFalsy();
+    });
+
+    //
+    // should be valid with inputs
+    it("The Reactive Form should be valid with inputs", () => {
+        let name = component.dataForm.controls["name"];
+        let priority = component.dataForm.controls["priority"];
+        name.setValue("long enough");
+        priority.setValue("1");
+        expect(component.dataForm.valid).toBeTrue();
+    });
 });
