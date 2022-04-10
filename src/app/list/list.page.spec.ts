@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { IonCard, IonicModule } from "@ionic/angular";
 import { DataService } from "../services/data.service";
+import { RouterTestingModule } from "@angular/router/testing";
 
 import { ListPage } from "./list.page";
 
@@ -22,7 +23,11 @@ fdescribe("ListPage", () => {
         // NullInjectorError: No provider for FormBuilder!
         TestBed.configureTestingModule({
             declarations: [ListPage],
-            imports: [IonicModule.forRoot(), ReactiveFormsModule],
+            imports: [
+                IonicModule.forRoot(),
+                ReactiveFormsModule,
+                RouterTestingModule,
+            ],
         }).compileComponents();
         // fixture is most important
         // fixture is basically a wrapper for a component and its template
