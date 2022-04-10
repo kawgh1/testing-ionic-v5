@@ -1,39 +1,46 @@
-import { Injectable } from '@angular/core';
-import { Plugins } from '@capacitor/core';
+import { Injectable } from "@angular/core";
+import { Plugins } from "@capacitor/core";
 const { Storage } = Plugins;
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: "root",
 })
 export class DataService {
-  
-  constructor() { }
+    constructor() {}
 
-  // Basic Testing
-  getTodos(): any[] {
-    return JSON.parse(localStorage.getItem('todos'));
-  }
+    // Basic Testing
+    getTodos(): any[] {
+        const result = JSON.parse(localStorage.getItem("todos"));
 
-  // Async Testing
-  async getStoredTodos(): Promise<any[]> {
-    const data = await Storage.get({ key: 'mytodos' });
-    
-    if (data.value && data.value != '') {
-      return JSON.parse(data.value) 
-    } else {
-      return [];
+        return result || [];
     }
-  }
 
-  async addTodo(todo) {
-    let todos = await this.getStoredTodos();    
-    todos.push(todo);
-    return await Storage.set({ key: 'mytodos', value: JSON.stringify(todos) });
-  }
+    // Async Testing
+    async getStoredTodos(): Promise<any[]> {
+        const data = await Storage.get({ key: "mytodos" });
 
-  async removeTodo(index) {
-    let todos = await this.getStoredTodos();
-    todos.splice(index, 1);
-    return await Storage.set({ key: 'mytodos', value: JSON.stringify(todos) });
-  }
+        if (data.value && data.value != "") {
+            return JSON.parse(data.value);
+        } else {
+            return [];
+        }
+    }
+
+    async addTodo(todo) {
+        let todos = await this.getStoredTodos();
+        todos.push(todo);
+        return await Storage.set({
+            key: "mytodos",
+            value: JSON.stringify(todos),
+        });
+    }
+
+    async removeTodo(index) {
+        let todos = await this.getStoredTodos();
+        todos.splice(index, 1);
+        return await Storage.set({
+            key: "mytodos",
+            value: JSON.stringify(todos),
+        });
+    }
 }

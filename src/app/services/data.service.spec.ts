@@ -1,16 +1,32 @@
-import { TestBed } from '@angular/core/testing';
+import { DataService } from "./data.service";
 
-import { DataService } from './data.service';
+describe("DataService", () => {
+    let service: DataService;
 
-describe('DataService', () => {
-  let service: DataService;
+    beforeEach(() => {
+        service = new DataService();
+    });
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(DataService);
-  });
+    afterEach(() => {
+        service = null;
+        localStorage.removeItem("todos");
+    });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+    it("should return an empty array", () => {
+        expect(service.getTodos()).toEqual([]);
+    });
+
+    it("return an array with one object", () => {
+        const array = ["First Todo"];
+        localStorage.setItem("todos", JSON.stringify(array));
+        expect(service.getTodos()).toEqual(array);
+        expect(service.getTodos()).toHaveSize(array.length);
+    });
+
+    it("return an array with multiple objects and correct size", () => {
+        const array = [1, 2, 3, 4, 5];
+        localStorage.setItem("todos", JSON.stringify(array));
+        expect(service.getTodos()).toEqual(array);
+        expect(service.getTodos()).toHaveSize(array.length);
+    });
 });
