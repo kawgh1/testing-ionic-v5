@@ -1,5 +1,11 @@
 import { DebugElement } from "@angular/core";
-import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import {
+    ComponentFixture,
+    fakeAsync,
+    TestBed,
+    tick,
+    waitForAsync,
+} from "@angular/core/testing";
 import { ReactiveFormsModule } from "@angular/forms";
 import { By } from "@angular/platform-browser";
 import { IonCard, IonicModule } from "@ionic/angular";
@@ -40,6 +46,7 @@ fdescribe("ListPage", () => {
 
         service = TestBed.inject(DataService);
     }));
+
     it("should create", () => {
         expect(component).toBeTruthy();
     });
@@ -64,18 +71,67 @@ fdescribe("ListPage", () => {
     });
 
     it("should show a todos after setting them", () => {
+        // in this test, first we are giving no todos and expecting no todos
         let element = fixture.debugElement.query(By.directive(IonCard));
         expect(element).toBeDefined();
         expect(element.nativeNode.textContent.trim()).toBe("No todos found");
 
+        // then we add todos
         const arr = [1, 2, 3, 4, 5];
         spyOn(service, "getTodos").and.returnValue(arr);
         component.loadTodos();
+        // important to call detect changes whenever something changes in component test
+        // so the view gets updated
         fixture.detectChanges();
+
+        // and expect the initial element to be null
 
         // NOT 'By' from Protractor, but from Angular platform browser
         element = fixture.debugElement.query(By.directive(IonCard));
-
         expect(element).toBeNull();
     });
+
+    // ASYNC TESTING
+    // 3 ways to test
+    //
+    //
+    //
+    // Jasmine - not recommended
+    it("should load async todos", (done) => {
+        const arr = [1, 2, 3, 4, 5];
+        const spy = spyOn(service, "getStoredTodos").and.returnValue(
+            Promise.resolve(arr)
+        );
+        component.loadStorageTodos();
+        // use spy.calls.mostRecent() to get the value from the promise
+        spy.calls.mostRecent().returnValue.then(() => {
+            expect(component.todos).toBe(arr);
+            done();
+        });
+    });
+
+    // using waitForAsync, wraps our test function in an async test zone
+    it("should load async todos", waitForAsync(() => {
+        const arr = [1, 2, 3, 4, 5];
+        const spy = spyOn(service, "getStoredTodos").and.returnValue(
+            Promise.resolve(arr)
+        );
+        component.loadStorageTodos();
+        // whenStable means when all Async operations are completed
+        fixture.whenStable().then(() => {
+            expect(component.todos).toBe(arr);
+        });
+    }));
+
+    // using fakeAsync
+    it("should load async todos", fakeAsync(() => {
+        const arr = [1, 2, 3, 4, 5];
+        const spy = spyOn(service, "getStoredTodos").and.returnValue(
+            Promise.resolve(arr)
+        );
+        component.loadStorageTodos();
+        // tick() simulates the asynchronous passage of time in for async calls in fakeAsync
+        tick();
+        expect(component.todos).toBe(arr);
+    }));
 });
