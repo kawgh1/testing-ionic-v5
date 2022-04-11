@@ -66,6 +66,36 @@ describe("Mobile Testing", () => {
         cy.initTodos();
         cy.get("ion-item-sliding").should("have.length", "3");
     });
+
+    /////// test CSS Properties - click 'dark' mode
+
+    it("enables dark mode", () => {
+        cy.visit("/");
+        // note rgba(0, 0, 0, 0) is transparent
+        cy.get("ion-content").should(
+            "have.css",
+            "background-color",
+            "rgba(0, 0, 0, 0)"
+        );
+        cy.get("[data-cy=dark-toggle]").click();
+        // fail
+        // cy.get("ion-content").should("have.css", "color", "rgb(123, 123, 123)");
+        // watch out for spacing between rgb values,
+        // it will fail the test if they dont match
+        cy.get("ion-content").should(
+            "have.css",
+            "background-color",
+            "rgb(0, 0, 0)"
+        );
+        // click again, check light mode
+
+        cy.get("[data-cy=dark-toggle]").click();
+        cy.get("ion-content").should(
+            "have.css",
+            "background-color",
+            "rgba(0, 0, 0, 0)"
+        );
+    });
 });
 
 //
