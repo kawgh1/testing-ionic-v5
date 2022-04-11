@@ -9,6 +9,62 @@ describe("Mobile Testing", () => {
     });
     it("visits list page", () => {
         cy.visit("/");
+        // look for this text on page, set to fail
+        // cy.contains("Whatever");
+        cy.get("ion-title").contains("List");
+    });
+
+    it("visits home page", () => {
+        cy.visit("/home");
+        // look for this text on page, set to fail
+        // cy.contains("Whatever");
+        cy.get("ion-title").contains("Home");
+    });
+
+    it("visits list page shows a card and no list as default", () => {
+        cy.visit("/");
+        // look for this text on page, set to fail
+        // cy.contains("Whatever");
+        cy.get("ion-card").should("exist");
+        cy.get("[data-cy=add-btn]").should("exist");
+        cy.get("ion-list").should("not.exist");
+    });
+
+    // functionality testing
+
+    // test add todo
+    it("click add adds a todo", () => {
+        cy.visit("/");
+        cy.get("ion-list").should("not.exist");
+        cy.get("ion-card").should("exist");
+        // dont use ion-input, use regular input
+        cy.get("input").click().type("My first todo");
+        cy.get("[data-cy=add-btn]").click();
+        // once todo added, todo list should now exist
+        cy.get("ion-list").should("exist");
+        // and ion-card should not exist
+        cy.get("ion-card").should("not.exist");
+    });
+
+    // test add todo and click it
+    it("click add adds a todo", () => {
+        cy.visit("/");
+        // dont use ion-input, use regular input
+        cy.get("input").click().type("My first todo");
+        // add todo
+        cy.get("[data-cy=add-btn]").click();
+        // then we click the todo we just created
+        cy.get("ion-item-sliding ion-item").first().click();
+        // should now be on the home page, check if 'home' in title
+        cy.get("ion-title").contains("Home");
+    });
+
+    //////// cypress/support/commands.js
+
+    it("has todos", () => {
+        cy.clearTodos();
+        cy.initTodos();
+        cy.get("ion-item-sliding").should("have.length", "3");
     });
 });
 

@@ -23,3 +23,25 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+import { Plugins } from "@capacitor/core";
+const { Storage } = Plugins;
+
+// initialize 3 Todos before each test
+Cypress.Commands.add("initTodos", () => {
+    cy.visit("/", {
+        onBeforeLoad() {
+            const arr = ["First Todo", "Second Todo", "Third Todo"];
+            Storage.set({ key: "mytodos", value: JSON.stringify(arr) });
+        },
+    });
+});
+
+// Clear todos after each test
+Cypress.Commands.add("clearTodos", () => {
+    cy.visit("/", {
+        onBeforeLoad() {
+            Storage.remove({ key: "mytodos" });
+        },
+    });
+});
